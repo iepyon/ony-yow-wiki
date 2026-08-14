@@ -94,15 +94,16 @@ deck:
         note: YOW 待ちのループ一覧（回しっぱなし検知） }
   loop-slides:                  # 1ループ = 1枚（表示は1枚にまとめる）
     layout: "grid:3x2"
-    # 行優先の emission 順。見た目: 左列 O/N/Y（ONY）、右列 O2予測/W/O実測
+    # 行優先の emission 順。読み順がループそのもの:
+    # 状況→望み / 行動→予測（O2 は Y が引き起こす結果） / 実測→教訓
     cells:
       - { heading: O 起きていること,  source: ony, section: O 起きていること }
-      - { heading: O2 起きそうなこと, source: ony, section: O2 起きそうなこと }
       - { heading: N 望んでいること,  source: ony, section: N 望んでいること }
-      - { heading: W 分かったこと,    source: yow, section: W 分かったこと }
       - { heading: Y やってみること,  source: ony, section: Y やってみること,
           merge-yow: Y やったこと }   # yow の Y が ony と異なれば「→」で併記（Y は接続点 — p108）
+      - { heading: O2 起きそうなこと, source: ony, section: O2 起きそうなこと }
       - { heading: O 起きたこと,      source: yow, section: O 起きたこと }
+      - { heading: W 分かったこと,    source: yow, section: W 分かったこと }
     unverified-fill: "—"        # 対の YOW が無いループの右列
   status-rule: 過去週は stable・現在週は draft（gen_deck が機械的に決める）
   review: 週明けにデッキが stable 化する差分 = 週締め PR。/onyw-review はこの PR に付く
