@@ -2,4 +2,4 @@
 
 ## 2026-08-14
 
-* **Creation**: [eiji 2026-W33](eiji-2026-W33.md) を置いた。
+* **Creation**: [eiji 2026-W33](eiji-2026-w33.md) を置いた。

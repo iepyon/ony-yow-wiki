@@ -19,9 +19,9 @@ W の記入を block しない — 問うだけ。
    gh pr view <番号> --json body          # /promote が貼った journal 逐語
    ```
    スライドの `<!--id:YYYYMMDD-NN-->` から該当週を割り出し、
-   `journal/eiji-<年>-W<週>.md` と、その**改変履歴**を取る:
+   `journal/eiji-<年>-w<週>.md`（ファイル名は小文字）と、その**改変履歴**を取る:
    ```bash
-   git log -p --follow journal/eiji-<年>-W<週>.md
+   git log -p --follow journal/eiji-<年>-w<週>.md
    ```
    （journal は追記専用だが強制フックは無い。過去行の書き換えは git 履歴にしか残らない）
 
