@@ -1,0 +1,109 @@
+# ONY-YOW カードの型・語彙・つながりの唯一の正本（SSoT）
+# 各宣言の source: は origin/summary.md のページ番号（原典忠実の監査点）。
+# 検査は tools/oylint.py、デッキ合成は tools/gen_deck.py がここを読む。
+# 語彙・診断名をコードや CLAUDE.md に再定義しない。
+version: 1
+
+# ── 要素（品詞） source: p134-138, p128 ──────────────────────────
+elements:
+  O:  { label: 起きていること,   definition: 判断に影響する観察された事実 }
+  N:  { label: 望んでいること,   definition: 実現したい状態 }
+  Y:  { label: やってみること,   definition: 自分たちが実行可能な行動 }
+  O2: { label: 起きそうなこと,   definition: 行動Yが引き起こす結果（事前は予測・事後は実測） }
+  W:  { label: 分かったこと,     definition: 原因が結果を引き起こすメカニズムの説明 }
+
+vocabularies:
+  activity: [観察, 仮説立案, 実行, 検証, 計画, 提案]   # source: p145-146
+
+# ── カード型（Raw Sources 層 = LLM-Wiki の生データ） ─────────────
+# 朝に ONY カード（今日やることの根拠）、夕に YOW カード（結果どうだったか）。
+# 記入タイミングが違うので別ファイル。ファイル分離そのものが後知恵防止
+# （YOW を書くとき ONY ファイルに触れる必要が無い。改変は git 履歴に残る）。
+cards:
+  ony:
+    dir: raw/ony
+    purpose: 朝、今日やることの根拠を記録する
+    fields:
+      id:       { required: true,  pattern: '^\d{8}-\d{2}$', note: ファイル名と一致。日付+日内連番 }
+      type:     { required: true,  const: ony }
+      title:    { required: true,  note: スライドの見出しになる一文 }
+      date:     { required: true,  pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$' }
+      owner:    { required: true }
+      activity: { required: true,  vocab: activity }
+      relates:  { required: false, kind: list, ref: ony, note: 関連する他ループの ID }
+    # 節見出しは必須（構造）・中身は自由（規律を課さない）。
+    # 中身が空のときだけ diagnostics が名前を返す（分類であって禁止ではない — p152）。
+    sections:
+      - { heading: O 起きていること,  element: O,  required: true }
+      - { heading: N 望んでいること,  element: N,  required: true }
+      - { heading: Y やってみること,  element: Y,  required: true }
+      - { heading: O2 起きそうなこと, element: O2, required: false, note: 無いと後知恵検査が効かない }
+      - { heading: 相手O,             element: O,  required: false, actor: counterpart, note: 活動=提案のとき }
+      - { heading: 相手N,             element: N,  required: false, actor: counterpart }
+    frozen:
+      when: 対の YOW カードが存在するとき
+      what: 全節（誤字修正・リンク追加は可）
+      how: 強制フックは無い。担保は git 履歴（/onyw-review が git log -p で検査）
+
+  yow:
+    dir: raw/yow
+    purpose: 夕方、結果どうだったかを記録する
+    fields:
+      id:       { required: true, pattern: '^\d{8}-\d{2}$', note: 対の ONY カードと同じ ID }
+      type:     { required: true, const: yow }
+      date:     { required: true, pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$' }
+      owner:    { required: true }
+      activity: { required: true, vocab: activity, default: 検証 }
+      ony:      { required: true, ref: ony, rule: same-id, note: 対の ONY カード ID（=自分の id） }
+    sections:
+      - { heading: Y やったこと,   element: Y,  required: true }
+      - { heading: O 起きたこと,   element: O2, required: true }   # 事前 O2 の実測
+      - { heading: W 分かったこと, element: W,  required: true }   # 見出し必須・中身自由
+
+# ── つながり ─────────────────────────────────────────────────────
+links:
+  - { name: ony,     from: yow, to: ony, cardinality: one,  required: true, rule: same-id,
+      description: YOW は必ず対の ONY を指す。Y が2つの三つ組の接続点（p108） }
+  - { name: relates, from: ony, to: ony, cardinality: many, required: false,
+      description: ループ間の関連。デッキ合成時に内部リンクになる }
+
+# ── 引き算診断 source: p150 ──────────────────────────────────────
+# (活動, 空の要素) → 名前 の表引き。要素集合だけでは決まらない
+# （{O,N,Y} は完全な計画でも W を欠いた実行でもある）。severity は常に info。
+diagnostics:
+  severity: info
+  rules:
+    - { activity: 観察,     missing: [N],          name: 見ただけ }
+    - { activity: 仮説立案, missing: [W],          name: ただの予測 }      # W は ONY カード外のため対象外だが宣言として保持
+    - { activity: 実行,     missing: [W],          name: 作業をこなすだけ } # 同上
+    - { activity: 計画,     missing: [O],          name: 机上の空論 }
+    - { activity: 提案,     missing-counterpart: [O, N], name: 押し売り }
+    - { activity: 提案,     missing: [O, N, Y],    name: 御用聞き }
+
+# ── デッキ合成（cards も wiki の一種 = 全カードが自動掲載される） ──
+# gen_deck.py が全カードから週1ファイルのデッキを生成する。生成物・手編集禁止。
+# 構成: タイトル → 週サマリー（冒頭3種）→ 日々のループスライド（1日単位の記録・日付順）。
+deck:
+  filename: "{owner}-{year}-w{week}.md"     # 週単位でファイル化。小文字（GitHub raw はケースセンシティブ）
+  summary-slides:               # デッキ冒頭の週サマリー
+    - { kind: stats,     title: 今週の数字, layout: table,
+        note: 日付×（ループ数・検証済・活動）の表 }
+    - { kind: w-catalog, title: W カタログ, layout: default,
+        note: 検証済みループの W を並べ、同デッキ内の該当スライドへ内部リンク。5ループ/枚で分割 }
+    - { kind: pending,   title: 未検証,     layout: default,
+        note: YOW 待ちのループ一覧（回しっぱなし検知） }
+  loop-slides:                  # 1ループ = 1枚（表示は1枚にまとめる）
+    layout: "grid:3x2"
+    # 行優先の emission 順。見た目: 左列 O/N/Y（ONY）、右列 O2予測/W/O実測
+    cells:
+      - { heading: O 起きていること,  source: ony, section: O 起きていること }
+      - { heading: O2 起きそうなこと, source: ony, section: O2 起きそうなこと }
+      - { heading: N 望んでいること,  source: ony, section: N 望んでいること }
+      - { heading: W 分かったこと,    source: yow, section: W 分かったこと }
+      - { heading: Y やってみること,  source: ony, section: Y やってみること,
+          merge-yow: Y やったこと }   # yow の Y が ony と異なれば「→」で併記（Y は接続点 — p108）
+      - { heading: O 起きたこと,      source: yow, section: O 起きたこと }
+    unverified-fill: "—"        # 対の YOW が無いループの右列
+  status-rule: 過去週は stable・現在週は draft（gen_deck が機械的に決める）
+  review: 週明けにデッキが stable 化する差分 = 週締め PR。/onyw-review はこの PR に付く
+  # order.yaml のグループは月（週の月曜が属する月）。

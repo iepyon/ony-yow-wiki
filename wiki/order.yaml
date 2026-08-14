@@ -1,0 +1,3 @@
+groups: # 生成物（gen_deck.py）— 手編集しない。グループ = 週の月曜が属する月
+  - title: 2026-08
+    decks: [eiji-2026-w33]
