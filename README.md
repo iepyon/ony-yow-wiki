@@ -31,12 +31,13 @@ PR コメント ← /onyw-review が3観点（バイアス / 因果の弱さ / �
 
 ```bash
 # 記録（Claude Code 内）
-/ony                  # 朝: ONY カード作成 + 即コミット
-/yow                  # 夕: 未検証一覧から選んで YOW カード作成
+/ony                  # 朝: 今日やることから逆算 → カード作成 → 日次ドラフト PR まで
+/yow                  # 夕: 今朝の Y から結果 O と教訓 W → 同じ PR に積む
+                      #    → 本人が gh pr ready & マージ = 日の確定
 
 # 週締めとレビュー
 /close-week           # 前週デッキ確定の PR
-/onyw-review 2        # PR #2 に3観点でコメント
+/onyw-review 2        # PR #2（日次・週締め）に3観点でコメント
 
 # 機械的チェック
 uv run --with pyyaml --no-project python3 tools/oylint.py --pending

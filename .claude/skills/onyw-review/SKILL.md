@@ -1,6 +1,6 @@
 ---
 name: onyw-review
-description: 週締め PR（/close-week）の週を3観点（バイアスに気づかせる / 因果のつながりの弱さ / 別の選択肢の提示）でレビューし、PR にコメントを1つ投稿する。3観点はサブエージェントに並列で投げる。「レビューして」「/onyw-review 12」で起動。
+description: 日次 PR（/ony /yow）または週締め PR（/close-week）を3観点（バイアスに気づかせる / 因果のつながりの弱さ / 別の選択肢の提示）でレビューし、PR にコメントを1つ投稿する。3観点はサブエージェントに並列で投げる。「レビューして」「/onyw-review 12」で起動。
 ---
 
 # /onyw-review — 3観点で PR にコメントする
@@ -15,10 +15,11 @@ W の記入を block しない — 問うだけ。
 
 1. **材料を集める**
    ```bash
-   gh pr diff <番号>                      # 週締め差分（サマリー stable 化）
-   gh pr view <番号> --json body          # /close-week が貼った統計と W カタログ
+   gh pr diff <番号>                      # 日次 PR: カードとデッキ差分 / 週締め PR: stable 化差分
+   gh pr view <番号> --json body,title    # /ony /close-week が貼った逐語
    ```
-   対象週の全ループ ID を週次サマリーから拾い、各カードと**改変履歴**を取る:
+   対象ループの ID（日次 PR は差分の raw/ から、週締め PR は週デッキから）を拾い、
+   各カードと**改変履歴**を取る:
    ```bash
    cat raw/ony/<ID>.md raw/yow/<ID>.md
    git log -p --follow raw/ony/<ID>.md    # 対の YOW 作成後に O2 等が書き換えられていないか
