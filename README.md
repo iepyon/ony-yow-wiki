@@ -43,7 +43,7 @@ uv run --with pyyaml --no-project python3 tools/oylint.py --pending
 uv run --with pyyaml --no-project python3 tools/gen_deck.py --check
 
 # 閲覧
-SW=/Users/eiji/src/claude-skills/slide-wiki/assets
+SW=~/src/claude-skills/slide-wiki/assets
 npx --prefix $SW tsx $SW/src/cli.ts --wiki --site-title "ONY-YOW" wiki out/index.html && open out/index.html
 ```
 

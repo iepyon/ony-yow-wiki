@@ -5,7 +5,9 @@ ONY-YOW（O:起きていること / N:望んでいること / Y:やってみる�
 
 **このファイルには、ここにしか無い規約だけを書く。**
 カードの型・語彙・つながり・引き算診断表・デッキ合成規則の正本は [ontology.yaml](ontology.yaml)。
-Markdown・スライド・リンク・バンドル記法の正本は `/Users/eiji/src/claude-skills/slide-wiki/`。
+Markdown・スライド・リンク・バンドル記法の正本は **slide-wiki**
+（`~/src/claude-skills/slide-wiki`。無ければ `gh repo clone iepyon/claude-skills ~/src/claude-skills`）。
+以下 `$SW` は `~/src/claude-skills/slide-wiki/assets` を指す。
 ONY-YOW の定義の正本は [origin/summary.md](origin/summary.md)。**そちらの内容をここへ写さない。**
 （**origin/ はローカル専用** — 原典スライドの詳細要約を含むため gitignore。リポジトリには載らない）
 
@@ -41,7 +43,7 @@ ONY-YOW の定義の正本は [origin/summary.md](origin/summary.md)。**そち�
 uv run --with pyyaml --no-project python3 tools/oylint.py            # カード検査（--pending で未検証一覧）
 uv run --with pyyaml --no-project python3 tools/gen_deck.py          # デッキ合成（--check で鮮度検査）
 npx --prefix $SW tsx $SW/src/cli.ts --lint wiki/<デッキ>.md --strict  # スライド構造検査
-# SW=/Users/eiji/src/claude-skills/slide-wiki/assets
+# SW=~/src/claude-skills/slide-wiki/assets
 ```
 
 oylint が見るもの: id=ファイル名 / 必須フィールド・語彙 / 必須節 / **yow→ony の参照存在と同 ID 規則** /

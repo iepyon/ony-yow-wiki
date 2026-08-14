@@ -32,8 +32,8 @@ W の記入を block しない — 問うだけ。
 
    | # | 観点 | 下敷き（エージェントに読ませる） | 見るもの |
    |---|---|---|---|
-   | ① | **バイアスに気づかせる** | `/Users/eiji/src/claude-skills/yusaburi/references/cognitive-biases.md` | **後知恵**: ONY カードのコミットが YOW より先か。YOW 作成後に ONY カード（特に O2）が改変されていないか（`git log -p`）／**確証**: O が N に都合よく選ばれていないか（summary.md §2.2「判断に影響する事実」）／**利用可能性**: 直近の目立つ出来事だけを O にしていないか |
-   | ② | **因果のつながりの弱さ** | `/Users/eiji/src/claude-skills/yusaburi/references/critical-thinking-frameworks.md` と `origin/summary.md` §8.2 | W は Y→O の**メカニズム**を説明しているか（相関の言い換えでないか）／**逆因果**（p208: 推論の順序をそのまま因果と認識していないか）／**交絡**（p209: 共通の原因の見落とし）／O2 と O の食い違いが W に反映されているか |
+   | ① | **バイアスに気づかせる** | [references/cognitive-biases.md](../../../references/cognitive-biases.md) | **後知恵**: ONY カードのコミットが YOW より先か。YOW 作成後に ONY カード（特に O2）が改変されていないか（`git log -p`）／**確証**: O が N に都合よく選ばれていないか（summary.md §2.2「判断に影響する事実」）／**利用可能性**: 直近の目立つ出来事だけを O にしていないか |
+   | ② | **因果のつながりの弱さ** | [references/critical-thinking-frameworks.md](../../../references/critical-thinking-frameworks.md) と `origin/summary.md` §8.2 | W は Y→O の**メカニズム**を説明しているか（相関の言い換えでないか）／**逆因果**（p208: 推論の順序をそのまま因果と認識していないか）／**交絡**（p209: 共通の原因の見落とし）／O2 と O の食い違いが W に反映されているか |
    | ③ | **別の選択肢の提示** | `origin/summary.md` §6・§8.3・§8.4 | **「ひとつ外すなら?」**（p228: Y は最小十分か。過剰な要素は無いか）／`N←Y`（p242: この N に対して他の Y は検討したか）／引き算診断（p150: この記述は (活動,欠落) の表でどれかに退化していないか） |
 
 3. **集約して1コメントに** — 3つの結果を観点別の見出しでまとめ、重複を削る。
@@ -68,4 +68,4 @@ W の記入を block しない — 問うだけ。
 - 承認・却下の判定（マージするかは本人が決める）
 - カードや生成デッキの直接修正
 - 3観点の外の一般的な文章添削（レビューの焦点を薄めない）
-- yusaburi スキル本体の呼び出し（references のみ再利用。出力規約が PR コメントに合わない）
+- 一般的な文章添削の混入（下敷きは references/ にコピー済みの2ファイルと origin/summary.md のみ）
