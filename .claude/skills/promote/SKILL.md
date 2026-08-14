@@ -13,11 +13,19 @@ yow 済みの対を列挙して選ばせる。
 
 ## 手順
 
-1. **journal から対を読む** — `journal/eiji-<年>-W<週>.md` の `#NN` の ony 行と yow 行。
+0. **前提チェック**（どれか失敗なら止めて理由を伝える）:
+   - `git status --porcelain journal/` が空であること（journal は main にコミット済みが前提。
+     未コミットだと PR に「予測の事後投入」が混ざり、レビュー観点①の検査を汚す）
+   - 昇格先デッキに同じスライド ID `<YYYYMMDD>-<NN>` が**既に無い**こと
+     （`grep -r 'id:<YYYYMMDD>-<NN>' wiki/`。二重昇格は lint でも止まるが、ブランチを切る前に気づく）
+   - 現在ブランチが main であること
+1. **journal から対を読む** — `journal/eiji-<年>-w<週>.md`（**小文字**）の `#NN` の ony 行と yow 行。
    yow 行が無い場合は「未検証のまま昇格しますか」と確認し、右列の O(実測)・W は `—` で埋める。
 2. **ブランチ** — `git switch -c promote/<YYYYMMDD>-<NN>`（日付は **ony 行の日付**）。
-3. **デッキを用意** — `wiki/eiji-<年>-w<週>.md` が無ければ CLAUDE.md の frontmatter 例から作り、
-   `wiki/order.yaml` の該当月グループ（**週の月曜が属する月**）に追記する。
+3. **デッキを用意** — `wiki/eiji-<年>-w<週>.md`（**ファイル名は全て小文字** — GitHub の raw 閲覧は
+   ケースセンシティブで、リンクの綴りと一致しないと 404 になる）。無ければ CLAUDE.md の
+   frontmatter 例から作り、`wiki/order.yaml` の該当月グループ（**週の月曜が属する月**）に追記する。
+   **過去週のデッキ（`status: stable`）への昇格は正常** — status は変えずスライドを足す。
 4. **スライドを追記** — 以下の形。**記述順は行優先（O → O2 → N → W → Y → O実測）**。
    見た目の読み順（左列 O→N→Y）と違うことに注意。手で並べ替えない。
 
