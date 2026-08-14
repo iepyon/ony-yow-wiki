@@ -68,7 +68,7 @@ relates の参照存在 / 引き算診断（info）。error があれば exit 1�
 | 夕: 結果と教訓を話す | `/yow` → 今朝の Y 一覧から O（結果）と W（教訓）を聞き出し、同じ PR に積む → **ready 化 → `/onyw-review` まで自動実行** |
 | 日を確定する | 本人がマージ（**マージ = 日の確定**。ready 化とレビューは /yow が済ませている） |
 | 週を締める | `/close-week` → 前週デッキの stable 化差分を PR に（日次 PR がマージ済み前提） |
-| PR にレビューコメント | `/onyw-review <PR番号>`（日次・週締めどちらの PR にも。バイアス / 因果の弱さ / 別の選択肢） |
+| PR にレビューコメント | `/onyw-review <PR番号>` — **朝夕の /ony /yow が自動実行**する。手動でも可（週締め PR など）。3観点・全体3件・各2行以内 |
 | 一覧・バックリンクを見る | `npx --prefix $SW tsx $SW/src/cli.ts --wiki wiki out/index.html` |
 
 **1日 = 1ドラフト PR。** 朝 `/ony` が開き、夕 `/yow` が積み、本人のマージで日が確定する。
