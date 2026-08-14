@@ -93,9 +93,9 @@ deck:
     - { kind: pending,   title: 未検証,     layout: default,
         note: YOW 待ちのループ一覧（回しっぱなし検知） }
   loop-slides:                  # 1ループ = 1枚（表示は1枚にまとめる）
-    layout: "grid:3x2"
-    # 行優先の emission 順。読み順がループそのもの:
-    # 状況→望み / 行動→予測（O2 は Y が引き起こす結果） / 実測→教訓
+    layout: "grid:2x3"
+    # 行優先の emission 順。上段 = ONY（朝・計画）、下段 = 予測→実測→教訓（夕・検証）。
+    # 原典の2つの三つ組（p106-108)が行に対応し、読み順はループそのもの
     cells:
       - { heading: O 起きていること,  source: ony, section: O 起きていること }
       - { heading: N 望んでいること,  source: ony, section: N 望んでいること }
