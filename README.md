@@ -6,8 +6,8 @@ ONY-YOW を記録し、レビューして学ぶための LLM Wiki。
   （+ **O2**:起きそうなこと = Y の結果予測）
 - **YOW**（過去向き・検証）— **Y**:やったこと / **O**:起きたこと / **W**:分かったこと
 
-原典: 森雄哉『観察、仮説、実行、検証、計画、提案を一年で3000回トレーニングする方法 /
-3000 Thinking Loops in 365 Days』(Scrum Fest Osaka 2026)。
+原典: 森雄哉『[観察、仮説、実行、検証、計画、提案を一年で3000回トレーニングする方法 /
+3000 Thinking Loops in 365 Days](https://speakerdeck.com/moriyuya/3000-thinking-loops-in-365-days)』(Scrum Fest Osaka 2026)。
 読解資産は `origin/summary.md`（**ローカル専用** — 原典の詳細要約を含むため gitignore）。
 
 ## 仕組み
