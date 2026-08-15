@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="578" viewBox="0 0 1200 578" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic','Droid Sans Japanese',sans-serif">
+<rect width="1200" height="578" fill="#ffffff"/>
+<text x="32" y="42" font-size="23" font-weight="bold" fill="#1f2328">ony-yow の wiki 化</text>
+<text x="32" y="66" font-size="13" fill="#656d76">20260814-04 / 実行 / 上段 = 朝の計画（O・N・Y） / 下段 = 夕の検証（O2・O 実測・W）</text>
+<rect x="32.0" y="84.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="46.0" y="112.0" font-size="14" font-weight="bold" fill="#0969da">O 起きていること</text>
+<text x="46.0" y="139.0" font-size="15" fill="#1f2328">仮説検証Wiki（hypothesis-wiki）を作ったが、個</text>
+<text x="46.0" y="162.0" font-size="15" fill="#1f2328">人レベルで試すには多数の仮説検証を回すのが難</text>
+<text x="46.0" y="185.0" font-size="15" fill="#1f2328">しかった</text>
+<rect x="414.7" y="84.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="428.7" y="112.0" font-size="14" font-weight="bold" fill="#0969da">N 望んでいること</text>
+<text x="428.7" y="139.0" font-size="15" fill="#1f2328">自分が、シンプルな仮説検証をこのツールを使っ</text>
+<text x="428.7" y="162.0" font-size="15" fill="#1f2328">て記録できる。続けられる</text>
+<rect x="797.3" y="84.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="811.3" y="112.0" font-size="14" font-weight="bold" fill="#0969da">Y やってみること</text>
+<text x="811.3" y="139.0" font-size="15" fill="#1f2328">個人が日常で使えるツールとして ony-yow を </text>
+<text x="811.3" y="162.0" font-size="15" fill="#1f2328">wiki 化する → ony-yow を wiki 化し、グリルミー</text>
+<text x="811.3" y="185.0" font-size="15" fill="#1f2328">対話で1日目の記録を一巡させた（対話スキルの修</text>
+<text x="811.3" y="208.0" font-size="15" fill="#1f2328">正も同日に実施）</text>
+<rect x="32.0" y="311.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="46.0" y="339.0" font-size="14" font-weight="bold" fill="#bc4c00">O2 起きそうなこと</text>
+<text x="46.0" y="366.0" font-size="15" fill="#1f2328">とりあえず1日目の記録ができる。ツールの気に入</text>
+<text x="46.0" y="389.0" font-size="15" fill="#1f2328">らない点が見つかる</text>
+<rect x="414.7" y="311.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="428.7" y="339.0" font-size="14" font-weight="bold" fill="#bc4c00">O 起きたこと</text>
+<text x="428.7" y="366.0" font-size="15" fill="#1f2328">カードに記録され、ドラフト PR を投げるところ</text>
+<text x="428.7" y="389.0" font-size="15" fill="#1f2328">まで確認できた。ただし日次 PR に機能修正（ス</text>
+<text x="428.7" y="412.0" font-size="15" fill="#1f2328">キーマ変更）のコミットが混ざった</text>
+<rect x="797.3" y="311.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="811.3" y="339.0" font-size="14" font-weight="bold" fill="#bc4c00">W 分かったこと</text>
+<text x="811.3" y="366.0" font-size="15" fill="#1f2328">継続して使いやすいかはまだクエスチョン。</text>
+<text x="811.3" y="389.0" font-size="15" fill="#1f2328">private 運用のままでは、slide-wiki の Pages </text>
+<text x="811.3" y="412.0" font-size="15" fill="#1f2328">公開は個人 GitHub では無理（public 化が必要）</text>
+<text x="32" y="558" font-size="13" fill="#656d76">検証済 / eiji / 2026-08-14T16:36</text>
+</svg>

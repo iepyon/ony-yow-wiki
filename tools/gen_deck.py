@@ -3,6 +3,7 @@
 
 実行:  uv run --with pyyaml --no-project python3 tools/gen_deck.py [--check]
 生成物: wiki/<owner>-<YYYY>-w<WW>.md（週1ファイル。冒頭に週サマリー、続けて1ループ=1枚）
+        wiki/img/<ID>.svg（ループスライドの画像 — PR 本文が貼る。描画は gen_slide_svg.py）
         wiki/order.yaml
 すべて手編集禁止。構成・セル並び・埋め文字の正本は ontology.yaml の deck 節。
 --check は差分があれば非0（週明けは前週 status の stable 化で必ず差分が出る = 週締め PR の種）。
@@ -14,6 +15,9 @@ from collections import Counter
 from pathlib import Path
 
 import yaml
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import gen_slide_svg  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 ONT = yaml.safe_load((ROOT / "ontology.yaml").read_text(encoding="utf-8"))
@@ -55,6 +59,22 @@ def week_of_card_id(cid: str):
 
 def chunk(seq, n):
     return [seq[i:i + n] for i in range(0, len(seq), n)]
+
+
+def loop_cells(osec, ysec):
+    """ループスライドの6セルを行優先で [(見出し, 本文)] にする。
+    デッキ本文・SVG（gen_slide_svg）・PR 本文（gen_pr_body）はここだけを源にする。"""
+    decl = ONT["deck"]["loop-slides"]
+    cells = []
+    for c in decl["cells"]:
+        src = osec if c["source"] == "ony" else (ysec or {})
+        body = src.get(c["section"], "").strip() or decl["unverified-fill"]
+        if c.get("merge-yow") and ysec:
+            done = ysec.get(c["merge-yow"], "").strip()
+            if done and done != body:
+                body = f"{body} → {done}"
+        cells.append((c["heading"], body))
+    return cells
 
 
 def gen_week(owner, y, w, loops, today):
@@ -111,14 +131,8 @@ def gen_week(owner, y, w, loops, today):
     for ofm, osec, yfm, ysec in loops:
         out += ["", "---", "", f"## {ofm['title']}",
                 f"<!--{decl['loop-slides']['layout']}-->", f"<!--id:{ofm['id']}-->"]
-        for cell in decl["loop-slides"]["cells"]:
-            src = (osec if cell["source"] == "ony" else (ysec or {}))
-            body = src.get(cell["section"], "").strip() or fill
-            if cell.get("merge-yow") and ysec:
-                done = ysec.get(cell["merge-yow"], "").strip()
-                if done and done != body:
-                    body = f"{body} → {done}"
-            out += [f"### {cell['heading']}", body]
+        for heading, body in loop_cells(osec, ysec):
+            out += [f"### {heading}", body]
         parts = [ofm["id"], ofm["activity"], "検証済" if yfm else "未検証"]
         for rel in (ofm.get("relates") or []):
             ry, rw = week_of_card_id(rel)
@@ -146,6 +160,9 @@ def main() -> int:
         loops.sort(key=lambda t: t[0]["id"])
         name = deck_name(owner, y, w)
         outputs[ROOT / "wiki" / f"{name}.md"] = gen_week(owner, y, w, loops, today)
+        for ofm, osec, yfm, ysec in loops:   # ループスライドの画像（PR 本文が貼る）
+            outputs[ROOT / "wiki" / "img" / f"{ofm['id']}.svg"] = \
+                gen_slide_svg.render(ofm, loop_cells(osec, ysec), yfm is not None)
         mon = dt.date.fromisocalendar(y, w, 1)
         month_groups.setdefault(f"{mon.year}-{mon.month:02d}", []).append(name)
 
@@ -154,9 +171,9 @@ def main() -> int:
         order += [f"  - title: {month}", f"    decks: [{', '.join(month_groups[month])}]"]
     outputs[ROOT / "wiki" / "order.yaml"] = "\n".join(order) + "\n"
 
-    # 生成対象外になった古いデッキ md（カード削除・粒度変更の残骸）
-    expected = {p.name for p in outputs} | {"index.md", "log.md", "order.yaml"}
-    stale = [p for p in (ROOT / "wiki").glob("*.md") if p.name not in expected]
+    # 生成対象外になった古いデッキ md・スライド画像（カード削除・粒度変更の残骸）
+    keep = set(outputs) | {ROOT / "wiki" / n for n in ("index.md", "log.md")}
+    stale = [p for p in (ROOT / "wiki").rglob("*") if p.is_file() and p not in keep]
 
     drift = 0
     for path, content in outputs.items():
@@ -166,6 +183,7 @@ def main() -> int:
             if check:
                 print(f"❌ 鮮度切れ: {path.relative_to(ROOT)}")
             else:
+                path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(content, encoding="utf-8")
                 print(f"生成: {path.relative_to(ROOT)}")
     for p in stale:

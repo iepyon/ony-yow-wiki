@@ -44,13 +44,15 @@ description: 朝、「今日やること」から逆算して ONY カード（O:
    git add raw/ony/<ID>.md && git commit -m "ony: <ID> <title>"
    ```
    最後に `git add wiki/ && git commit -m "wiki: <日付> 朝の再生成"`。
-8. **ドラフト PR** — push して、その日の PR が無ければドラフトで作る:
+8. **ドラフト PR** — push して、その日の PR が無ければドラフトで作る。
+   **本文はスライド画像**（A3 ライト）を生成して渡す — 手書きしない。
+   **push が先**（本文の画像 URL は push 済みの SHA で固定される）:
    ```bash
    git push -u origin day/<YYYY-MM-DD>
-   gh pr create --draft --title "<YYYY-MM-DD> の ONY-YOW" \
-     --body "<各ループの O/N/Y/O2 を逐語で。夕方 /yow で結果を積む>"
+   uv run --with pyyaml --no-project python3 tools/gen_pr_body.py > /tmp/pr-body.md
+   gh pr create --draft --title "<YYYY-MM-DD> の ONY-YOW" --body-file /tmp/pr-body.md
    ```
-   既にあればコミットを積むだけ。
+   既にあればコミットを積み、本文も同じ手順で作り直す（`gh pr edit <番号> --body-file /tmp/pr-body.md`）。
 9. **朝レビュー（自動）** — 続けて **[/onyw-review の手順](../onyw-review/SKILL.md) をそのまま実行**し、
    計画段階の3観点コメントを PR に投稿する（ONY のみの朝モード — 観点の力点は
    onyw-review 側の「PR の状態で力点を変える」を参照）。
