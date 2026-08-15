@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="578" viewBox="0 0 1200 578" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic','Droid Sans Japanese',sans-serif">
+<rect width="1200" height="578" fill="#ffffff"/>
+<text x="32" y="42" font-size="23" font-weight="bold" fill="#1f2328">/ony /yow を実行して会話の問題箇所を調べる</text>
+<text x="32" y="66" font-size="13" fill="#656d76">20260815-01 / 実行 / 上段 = 朝の計画（O・N・Y） / 下段 = 夕の検証（O2・O 実測・W）</text>
+<rect x="32.0" y="84.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="46.0" y="112.0" font-size="14" font-weight="bold" fill="#0969da">O 起きていること</text>
+<text x="46.0" y="139.0" font-size="15" fill="#1f2328">今日試しに ony-yow の wiki を作ったばかりで、</text>
+<text x="46.0" y="162.0" font-size="15" fill="#1f2328">会話ログ自体が少ない</text>
+<rect x="414.7" y="84.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="428.7" y="112.0" font-size="14" font-weight="bold" fill="#0969da">N 望んでいること</text>
+<text x="428.7" y="139.0" font-size="15" fill="#1f2328">新しいアイデアが出る。使いやすくするアイデア</text>
+<text x="428.7" y="162.0" font-size="15" fill="#1f2328">が出てくる</text>
+<rect x="797.3" y="84.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="811.3" y="112.0" font-size="14" font-weight="bold" fill="#0969da">Y やってみること</text>
+<text x="811.3" y="139.0" font-size="15" fill="#1f2328">/ony /yow を実行してみて、会話の問題箇所を調</text>
+<text x="811.3" y="162.0" font-size="15" fill="#1f2328">べる</text>
+<rect x="32.0" y="311.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="46.0" y="339.0" font-size="14" font-weight="bold" fill="#bc4c00">O2 起きそうなこと</text>
+<text x="46.0" y="366.0" font-size="15" fill="#1f2328">同じことを聞かれる。同じ質問がある。冗長なと</text>
+<text x="46.0" y="389.0" font-size="15" fill="#1f2328">ころがある</text>
+<text x="46.0" y="412.0" font-size="15" fill="#1f2328">バックログファイルを記載し、少なくとも3つ項目</text>
+<text x="46.0" y="435.0" font-size="15" fill="#1f2328">を加えられる</text>
+<rect x="414.7" y="311.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="428.7" y="339.0" font-size="14" font-weight="bold" fill="#bc4c00">O 起きたこと</text>
+<text x="428.7" y="366.0" font-size="15" fill="#8c959f">—</text>
+<rect x="797.3" y="311.0" width="370.7" height="215.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="811.3" y="339.0" font-size="14" font-weight="bold" fill="#bc4c00">W 分かったこと</text>
+<text x="811.3" y="366.0" font-size="15" fill="#8c959f">—</text>
+<text x="32" y="558" font-size="13" fill="#656d76">未検証（夕の /yow で下段が埋まる） / eiji / 2026-08-15T10:17</text>
+</svg>
