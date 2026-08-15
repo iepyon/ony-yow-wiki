@@ -12,6 +12,7 @@
 """
 import datetime as dt
 import subprocess
+import unicodedata
 import sys
 from pathlib import Path
 
@@ -31,6 +32,41 @@ def git(*args) -> str | None:
         return r.stdout.strip() or None
     except (subprocess.CalledProcessError, FileNotFoundError):
         return None
+
+
+def git_ok(*args) -> bool:
+    """出力ではなく終了コードだけを見る（cat-file -e は成功時に何も出さない）。"""
+    try:
+        subprocess.run(["git", "-C", str(ROOT), *args], capture_output=True, check=True)
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return False
+
+
+def slug(text: str) -> str:
+    """GitHub が見出しから作るアンカー（github-slugger 相当）。
+    小文字化 → 記号を落とす（日本語の文字・数字・ハイフンは残す）→ 空白を - に。"""
+    kept = [c for c in text.strip().lower()
+            if c.isalnum() or c.isspace() or unicodedata.category(c) in ("Mn", "Mc", "Pc", "Pd")]
+    return "".join("-" if c.isspace() else c for c in kept)
+
+
+def deck_anchor(deck: Path, card_id: str) -> str | None:
+    """生成済みデッキ md を読み、そのループの見出しのアンカーを引く。
+    `<!--id:...-->` は GitHub の blob 表示ではアンカーにならないため、見出し側から取る
+    （重複見出しには GitHub と同じく -1, -2 が付くので、文書順に数える）。"""
+    if not deck.exists():
+        return None
+    seen, current = {}, None
+    for line in deck.read_text(encoding="utf-8").splitlines():
+        if line.startswith("#"):
+            s = slug(line.lstrip("#").strip())
+            n = seen.get(s, 0)
+            seen[s] = n + 1
+            current = s if n == 0 else f"{s}-{n}"
+        elif line.strip() == f"<!--id:{card_id}-->":
+            return current
+    return None
 
 
 def origin() -> tuple[str, str] | None:
@@ -66,10 +102,17 @@ def loop_block(ofm, osec, yfm, ysec, repo, sha) -> list[str]:
     if repo and sha:
         owner, name = repo
         y, w = week_of(card_date(ofm))
-        img = f"https://raw.githubusercontent.com/{owner}/{name}/{sha}/wiki/img/{ofm['id']}.svg"
-        slide = (f"https://github.com/{owner}/{name}/blob/{sha}/wiki/"
-                 f"{deck_name(ofm['owner'], y, w)}.md#{ofm['id']}")
-        out += [f"[![{ofm['title']}]({img})]({slide})", ""]
+        deck = f"wiki/{deck_name(ofm['owner'], y, w)}.md"
+        svg = f"wiki/img/{ofm['id']}.svg"
+        if not git_ok("cat-file", "-e", f"{sha}:{svg}"):
+            print(f"⚠ {svg} が {sha[:7]} に無い — gen_deck.py を回してコミットしてから作り直す"
+                  "（画像は貼らずに続ける）", file=sys.stderr)
+        else:
+            anchor = deck_anchor(ROOT / deck, ofm["id"])
+            img = f"https://raw.githubusercontent.com/{owner}/{name}/{sha}/{svg}"
+            slide = (f"https://github.com/{owner}/{name}/blob/{sha}/{deck}"
+                     + (f"#{anchor}" if anchor else ""))
+            out += [f"[![{ofm['title']}]({img})]({slide})", ""]
 
     rows = []
     for i in range(0, len(cells), COLS):
