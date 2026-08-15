@@ -45,6 +45,7 @@ ONY-YOW の定義の正本は [origin/summary.md](origin/summary.md)。**そち�
 ```bash
 uv run --with pyyaml --no-project python3 tools/oylint.py            # カード検査（--pending で未検証一覧）
 uv run --with pyyaml --no-project python3 tools/gen_deck.py          # デッキ合成（--check で鮮度検査）
+uv run --with pyyaml --no-project python3 tools/gen_pr_body.py       # PR 本文（A3 ライト）を標準出力へ
 npx --prefix $SW tsx $SW/src/cli.ts --lint wiki/<デッキ>.md --strict  # スライド構造検査
 # SW=~/src/claude-skills/slide-wiki/assets
 ```
@@ -75,6 +76,18 @@ relates の参照存在 / 引き算診断（info）。error があれば exit 1�
 
 **1日 = 1ドラフト PR。** 朝 `/ony` が開き、夕 `/yow` が積み、本人のマージで日が確定する。
 レビューの往復は PR コメントに残す（A3 のキャッチボール）。
+
+## PR 本文 = A3 ライト（1ループ1枚）
+
+PR 本文は `tools/gen_pr_body.py` の**生成物**（手書きしない）。デッキのループスライドと同じ
+`grid:2x3` を Markdown 表で写す — 上段が朝の計画（O/N/Y）、下段が夕の検証（O2/O実測/W）。
+diff を追わなくても**一枚で判る**ようにするのが目的（トヨタの A3 一枚もの — 事情を知らない人でも
+初期レベルの助言ができる状態にする）。文末に「O2 と O のズレを見てほしい」の1行を添える。
+
+**画像は貼らない。** private リポジトリでは PR 本文の画像が壊れる（GitHub は本文中の画像を
+camo プロキシで**匿名**取得するため、private の raw URL には届かない）。表なら通知メール・
+モバイルアプリ・GitHub 検索でも同じに見え、diff にも残る。public 化して Pages でデッキを
+公開したら、スライドの URL をそのまま貼れる（20260814-04 の W の続き）。
 
 **日次 PR に載せるのは記録だけ**（`raw/` のカードと `wiki/` の再生成）。
 スキーマ変更（CLAUDE.md・ontology.yaml・templates・tools・skills）は **main 直コミット**とし、
