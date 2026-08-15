@@ -5,10 +5,15 @@
 出力:  標準出力に PR 本文の Markdown（gh pr create/edit --body-file で渡す）
 
 本体は **スライド画像**（wiki/img/<ID>.svg を raw.githubusercontent の URL で貼る）。
-畳んだ「テキスト版」に同じ内容の表を残す — 画像を出さない通知メールや検索のため。
+同じ内容の表を「テキスト版」として下に残す — 画像を出さない通知メールや検索のため。
 
 **push した後に実行する。** 画像 URL は HEAD のコミット SHA で固定するので、
 その SHA が origin に載っていないと画像が出ない（マージ後もブランチ削除後も生き続ける）。
+
+**画像をリンクで包まない・表を <details> で畳まない。** どちらも GitHub API 経由の
+投稿では書き換えられる — リンク付き画像 `[![](img)](url)` はバッククォートで括られて
+ただの文字列になり、<details>/<summary> はタグごと落ちる（2026-08-15 に PR #6 で観測）。
+スライドへの導線は表の後に素のリンクで置く。
 """
 import datetime as dt
 import subprocess
@@ -94,25 +99,29 @@ def cell(text: str) -> str:
 
 
 def loop_block(ofm, osec, yfm, ysec, repo, sha) -> list[str]:
-    """1ループ = スライド画像 + 畳んだテキスト版（同じ grid:2x3）。"""
+    """1ループ = スライド画像 + テキスト版（同じ grid:2x3）。"""
     cells = loop_cells(osec, ysec)
     state = "検証済" if yfm else "未検証（夕の /yow で埋まります）"
     out = [f"## {ofm['title']}", ""]
+    tail = []
 
     if repo and sha:
         owner, name = repo
         y, w = week_of(card_date(ofm))
         deck = f"wiki/{deck_name(ofm['owner'], y, w)}.md"
         svg = f"wiki/img/{ofm['id']}.svg"
+        anchor = deck_anchor(ROOT / deck, ofm["id"])
+        slide = (f"https://github.com/{owner}/{name}/blob/{sha}/{deck}"
+                 + (f"#{anchor}" if anchor else ""))
+        tail = [f"[スライドを見る]({slide})", ""]
         if not git_ok("cat-file", "-e", f"{sha}:{svg}"):
             print(f"⚠ {svg} が {sha[:7]} に無い — gen_deck.py を回してコミットしてから作り直す"
                   "（画像は貼らずに続ける）", file=sys.stderr)
         else:
-            anchor = deck_anchor(ROOT / deck, ofm["id"])
+            # 画像は素の ![]() で置く。リンクで包むと API 経由の投稿で
+            # バッククォートに括られて文字列になる（module docstring を見よ）。
             img = f"https://raw.githubusercontent.com/{owner}/{name}/{sha}/{svg}"
-            slide = (f"https://github.com/{owner}/{name}/blob/{sha}/{deck}"
-                     + (f"#{anchor}" if anchor else ""))
-            out += [f"[![{ofm['title']}]({img})]({slide})", ""]
+            out += [f"![{ofm['title']}]({img})", ""]
 
     rows = []
     for i in range(0, len(cells), COLS):
@@ -124,8 +133,9 @@ def loop_block(ofm, osec, yfm, ysec, repo, sha) -> list[str]:
             rows.append("| " + " | ".join(f"**{h}**" for h, _ in chunk) + " |")
         rows.append("| " + " | ".join(cell(b) for _, b in chunk) + " |")
 
-    return out + [f"<details><summary>テキスト版 — {ofm['id']} / {ofm['activity']} / {state}"
-                  "（検索・通知メール用）</summary>", ""] + rows + ["", "</details>", ""]
+    # 表は畳まない（<details> は API 経由の投稿でタグごと落ちる）
+    return out + [f"テキスト版 — {ofm['id']} / {ofm['activity']} / {state}"
+                  "（検索・通知メール用）", ""] + rows + [""] + tail
 
 
 def main() -> int:
