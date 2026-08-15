@@ -13,14 +13,18 @@ PR 本文はこの SVG を raw.githubusercontent の URL で貼る（tools/gen_p
 import unicodedata
 from html import escape
 
-W = 1200                  # 幅は固定・高さは中身次第（短い日は 16:9 前後に収まる）
-M = 32                    # 外周マージン
-GRID_TOP, FOOT_H = 84, 52
-GAP = 12
+# 幅は PR 本文のカラム幅（約 880px）に合わせる。これより広く描くと GitHub 側で
+# 縮小表示され、そのぶん文字が小さくなる（1200px で描くと 16px が実効 11px になった）。
+# 等倍で出るので BODY_FS がそのまま実効サイズ = 本文の表（14px）より大きい。
+W = 880
+M = 24                    # 外周マージン
+GRID_TOP, FOOT_H = 70, 40
+GAP = 10
 COLS, ROWS = 3, 2
-PAD = 14                  # セル内側の余白
-HEAD_FS, BODY_FS = 14, 15
-MIN_BODY_LINES = 7        # これ未満でもセルは縮めない（スライドとしての見え方）
+PAD = 12                  # セル内側の余白
+TITLE_FS, META_FS = 22, 13
+HEAD_FS, BODY_FS = 15, 16
+MIN_BODY_LINES = 6        # これ未満でもセルは縮めない（スライドとしての見え方）
 MAX_LINES = 24            # 異常に長い記録だけここで止める（テキスト版が PR 本文に付く）
 FILL = "—"
 
@@ -33,7 +37,7 @@ NO_HEAD = "、。，．）」』】〉》・…ー？！：；"   # 行頭に置
 
 CELL_W = (W - 2 * M - (COLS - 1) * GAP) / COLS
 INNER_W = CELL_W - 2 * PAD
-LINE_H = round(BODY_FS * 1.55)
+LINE_H = round(BODY_FS * 1.6)
 MAX_UNITS = int(INNER_W / (BODY_FS / 2))
 
 
@@ -88,9 +92,9 @@ def render(fm, cells, verified: bool) -> str:
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{height}" '
            f'viewBox="0 0 {W} {height}" font-family="{FONT}">',
            f'<rect width="{W}" height="{height}" fill="{BG}"/>',
-           f'<text x="{M}" y="42" font-size="23" font-weight="bold" fill="{INK}">'
+           f'<text x="{M}" y="{TITLE_FS + 8}" font-size="{TITLE_FS}" font-weight="bold" fill="{INK}">'
            f'{escape(str(fm["title"]))}</text>',
-           f'<text x="{M}" y="66" font-size="13" fill="{MUTED}">'
+           f'<text x="{M}" y="{TITLE_FS + META_FS + 17}" font-size="{META_FS}" fill="{MUTED}">'
            f'{fm["id"]} / {escape(str(fm["activity"]))} / '
            f'上段 = 朝の計画（O・N・Y） / 下段 = 夕の検証（O2・O 実測・W）</text>']
 
@@ -108,7 +112,7 @@ def render(fm, cells, verified: bool) -> str:
             out.append(f'<text x="{x + PAD:.1f}" y="{top + j * LINE_H:.1f}" font-size="{BODY_FS}" '
                        f'fill="{color}">{escape(line)}</text>')
 
-    out += [f'<text x="{M}" y="{height - 20}" font-size="13" fill="{MUTED}">'
+    out += [f'<text x="{M}" y="{height - 14}" font-size="{META_FS}" fill="{MUTED}">'
             f'{"検証済" if verified else "未検証（夕の /yow で下段が埋まる）"}'
             f' / {escape(str(fm["owner"]))} / {escape(str(fm["date"]))}</text>',
             "</svg>"]
