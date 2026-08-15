@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="638" viewBox="0 0 880 638" font-family="'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',Meiryo,'IPAGothic','Droid Sans Japanese',sans-serif">
+<rect width="880" height="638" fill="#ffffff"/>
+<text x="24" y="30" font-size="22" font-weight="bold" fill="#1f2328">/ony /yow を実行して会話の問題箇所を調べる</text>
+<text x="24" y="52" font-size="13" fill="#656d76">20260815-01 / 実行 / 上段 = 朝の計画（O・N・Y） / 下段 = 夕の検証（O2・O 実測・W）</text>
+<rect x="24.0" y="70.0" width="270.7" height="259.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="36.0" y="97.0" font-size="15" font-weight="bold" fill="#0969da">O 起きていること</text>
+<text x="36.0" y="125.0" font-size="16" fill="#1f2328">今日試しに ony-yow の wiki を</text>
+<text x="36.0" y="151.0" font-size="16" fill="#1f2328">作ったばかりで、会話ログ自体が</text>
+<text x="36.0" y="177.0" font-size="16" fill="#1f2328">少ない</text>
+<rect x="304.7" y="70.0" width="270.7" height="259.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="316.7" y="97.0" font-size="15" font-weight="bold" fill="#0969da">N 望んでいること</text>
+<text x="316.7" y="125.0" font-size="16" fill="#1f2328">新しいアイデアが出る。使いやす</text>
+<text x="316.7" y="151.0" font-size="16" fill="#1f2328">くするアイデアが出てくる</text>
+<rect x="585.3" y="70.0" width="270.7" height="259.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="597.3" y="97.0" font-size="15" font-weight="bold" fill="#0969da">Y やってみること</text>
+<text x="597.3" y="125.0" font-size="16" fill="#1f2328">/ony /yow を実行してみて、会話</text>
+<text x="597.3" y="151.0" font-size="16" fill="#1f2328">の問題箇所を調べる → /ony </text>
+<text x="597.3" y="177.0" font-size="16" fill="#1f2328">/yow を実行しながら会話の問題</text>
+<text x="597.3" y="203.0" font-size="16" fill="#1f2328">箇所を調べ、見つかったものを </text>
+<text x="597.3" y="229.0" font-size="16" fill="#1f2328">`backlog.md` に積んだ。</text>
+<text x="597.3" y="255.0" font-size="16" fill="#1f2328">朝の想定は「調べる」までだった</text>
+<text x="597.3" y="281.0" font-size="16" fill="#1f2328">が、実際にはバックログへの記載</text>
+<text x="597.3" y="307.0" font-size="16" fill="#1f2328">まで進めた。</text>
+<rect x="24.0" y="339.0" width="270.7" height="259.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="36.0" y="366.0" font-size="15" font-weight="bold" fill="#bc4c00">O2 起きそうなこと</text>
+<text x="36.0" y="394.0" font-size="16" fill="#1f2328">同じことを聞かれる。同じ質問が</text>
+<text x="36.0" y="420.0" font-size="16" fill="#1f2328">ある。冗長なところがある</text>
+<text x="36.0" y="446.0" font-size="16" fill="#1f2328">バックログファイルを記載し、少</text>
+<text x="36.0" y="472.0" font-size="16" fill="#1f2328">なくとも3つ項目を加えられる</text>
+<rect x="304.7" y="339.0" width="270.7" height="259.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="316.7" y="366.0" font-size="15" font-weight="bold" fill="#bc4c00">O 起きたこと</text>
+<text x="316.7" y="394.0" font-size="16" fill="#1f2328">バックログへの追加はできた（</text>
+<text x="316.7" y="420.0" font-size="16" fill="#1f2328">`backlog.md` に3件 — 判断を毎</text>
+<text x="316.7" y="446.0" font-size="16" fill="#1f2328">回人間に返す冗長さ・</text>
+<text x="316.7" y="472.0" font-size="16" fill="#1f2328">並行セッション・規約とツールの</text>
+<text x="316.7" y="498.0" font-size="16" fill="#1f2328">ずれ）。</text>
+<text x="316.7" y="524.0" font-size="16" fill="#1f2328"></text>
+<text x="316.7" y="550.0" font-size="16" fill="#1f2328">チャットで1問1答はターンも長く</text>
+<text x="316.7" y="576.0" font-size="16" fill="#1f2328">単調に感じる。</text>
+<rect x="585.3" y="339.0" width="270.7" height="259.0" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+<text x="597.3" y="366.0" font-size="15" font-weight="bold" fill="#bc4c00">W 分かったこと</text>
+<text x="597.3" y="394.0" font-size="16" fill="#1f2328">別のアプローチの入力体験をした</text>
+<text x="597.3" y="420.0" font-size="16" fill="#1f2328">い。音声入力で任意のものを入れ</text>
+<text x="597.3" y="446.0" font-size="16" fill="#1f2328">て、足りないところを</text>
+<text x="597.3" y="472.0" font-size="16" fill="#1f2328">追加質問してくれるとか、スマホ</text>
+<text x="597.3" y="498.0" font-size="16" fill="#1f2328">からも、HTML 画面で入力して反</text>
+<text x="597.3" y="524.0" font-size="16" fill="#1f2328">映されるとか。</text>
+<text x="24" y="624" font-size="13" fill="#656d76">検証済 / eiji / 2026-08-15T10:17</text>
+</svg>
