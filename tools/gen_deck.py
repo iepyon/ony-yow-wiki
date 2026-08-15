@@ -171,9 +171,12 @@ def main() -> int:
         order += [f"  - title: {month}", f"    decks: [{', '.join(month_groups[month])}]"]
     outputs[ROOT / "wiki" / "order.yaml"] = "\n".join(order) + "\n"
 
-    # 生成対象外になった古いデッキ md・スライド画像（カード削除・粒度変更の残骸）
+    # 生成対象外になった古いデッキ md・スライド画像（カード削除・粒度変更の残骸）。
+    # 掃除は gen_deck が作る種類（wiki/*.md と wiki/img/*.svg）だけに限る —
+    # wiki/ には gen-okf-index.ts など他のツールの生成物も同居するので巻き添えで消さない。
     keep = set(outputs) | {ROOT / "wiki" / n for n in ("index.md", "log.md")}
-    stale = [p for p in (ROOT / "wiki").rglob("*") if p.is_file() and p not in keep]
+    mine = [*(ROOT / "wiki").glob("*.md"), *(ROOT / "wiki" / "img").glob("*.svg")]
+    stale = [p for p in mine if p not in keep]
 
     drift = 0
     for path, content in outputs.items():
