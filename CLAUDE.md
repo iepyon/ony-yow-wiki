@@ -62,6 +62,8 @@ relates の参照存在 / 引き算診断（info）。error があれば exit 1�
 - ファイル名は**全て小文字**（GitHub の raw 閲覧はケースセンシティブ）
 - `status` は gen_deck が機械的に決める（過去 = `stable`、当日/現在週 = `draft`）
 - 昇格フラグは無い — **全カードが自動掲載**される
+- ループスライドの画像 `wiki/img/<ID>.svg` も gen_deck が生成する（PR 本文が貼る。描画は
+  `tools/gen_slide_svg.py`）。デッキ本文・画像・PR 本文はどれも `loop_cells()` を源にする
 
 ## ワークフロー
 
@@ -84,10 +86,14 @@ PR 本文は `tools/gen_pr_body.py` の**生成物**（手書きしない）。�
 diff を追わなくても**一枚で判る**ようにするのが目的（トヨタの A3 一枚もの — 事情を知らない人でも
 初期レベルの助言ができる状態にする）。文末に「O2 と O のズレを見てほしい」の1行を添える。
 
-**画像は貼らない。** private リポジトリでは PR 本文の画像が壊れる（GitHub は本文中の画像を
-camo プロキシで**匿名**取得するため、private の raw URL には届かない）。表なら通知メール・
-モバイルアプリ・GitHub 検索でも同じに見え、diff にも残る。public 化して Pages でデッキを
-公開したら、スライドの URL をそのまま貼れる（20260814-04 の W の続き）。
+**本体はスライド画像**（`wiki/img/<ID>.svg` — gen_deck の生成物）。raw.githubusercontent の
+URL で貼り、URL は **HEAD のコミット SHA で固定**する（ブランチを消してもマージ後も生き続ける）。
+したがって順序は **push → 本文生成 → PR 作成/更新**。画像を出さない通知メール・GitHub 検索の
+ために、同じ内容の表を畳んだ「テキスト版」で必ず併記する。
+
+- **PNG ではなく SVG** — テキストなので diff に残り grep でき、フォントは閲覧者側で解決される
+- **public だから成立する** — private では camo（GitHub の画像プロキシ）が**匿名**取得に失敗して
+  画像が壊れる。private に戻すならテキスト版だけに戻すこと（20260814-04 の W の続き）
 
 **日次 PR に載せるのは記録だけ**（`raw/` のカードと `wiki/` の再生成）。
 スキーマ変更（CLAUDE.md・ontology.yaml・templates・tools・skills）は **main 直コミット**とし、

@@ -45,7 +45,8 @@ description: 朝、「今日やること」から逆算して ONY カード（O:
    ```
    最後に `git add wiki/ && git commit -m "wiki: <日付> 朝の再生成"`。
 8. **ドラフト PR** — push して、その日の PR が無ければドラフトで作る。
-   **本文はスライドの写し**（A3 ライト）を生成して渡す — 手書きしない:
+   **本文はスライド画像**（A3 ライト）を生成して渡す — 手書きしない。
+   **push が先**（本文の画像 URL は push 済みの SHA で固定される）:
    ```bash
    git push -u origin day/<YYYY-MM-DD>
    uv run --with pyyaml --no-project python3 tools/gen_pr_body.py > /tmp/pr-body.md
