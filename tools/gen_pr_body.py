@@ -4,16 +4,16 @@
 実行:  uv run --with pyyaml --no-project python3 tools/gen_pr_body.py [YYYY-MM-DD] > /tmp/pr-body.md
 出力:  標準出力に PR 本文の Markdown（gh pr create/edit --body-file で渡す）
 
-本体は **スライド画像**（wiki/img/<ID>.svg を raw.githubusercontent の URL で貼る）。
-同じ内容の表を「テキスト版」として下に残す — 画像を出さない通知メールや検索のため。
+本体は **Markdown の表**（デッキのループスライドと同じ grid:2x3 をそのまま写す）。
+画像は貼らない — 表だけで一枚ぶんの情報は足りており、通知メールでも GitHub 検索でも
+そのまま読める（2026-08-15 の判断。スライド画像の実装は git 履歴にある）。
 
-**push した後に実行する。** 画像 URL は HEAD のコミット SHA で固定するので、
-その SHA が origin に載っていないと画像が出ない（マージ後もブランチ削除後も生き続ける）。
+**push した後に実行する。** 「スライドを見る」の URL は HEAD のコミット SHA で
+固定するので、その SHA が origin に載っていないとリンクが 404 になる
+（固定しておくとマージ後もブランチ削除後も生き続ける）。
 
-**画像をリンクで包まない・表を <details> で畳まない。** どちらも GitHub API 経由の
-投稿では書き換えられる — リンク付き画像 `[![](img)](url)` はバッククォートで括られて
-ただの文字列になり、<details>/<summary> はタグごと落ちる（2026-08-15 に PR #6 で観測）。
-スライドへの導線は表の後に素のリンクで置く。
+**表を <details> で畳まない。** GitHub API 経由の投稿では <details>/<summary> が
+タグごと落ちる（2026-08-15 に PR #6 で観測）。導線は表の後に素のリンクで置く。
 """
 import datetime as dt
 import subprocess
@@ -37,15 +37,6 @@ def git(*args) -> str | None:
         return r.stdout.strip() or None
     except (subprocess.CalledProcessError, FileNotFoundError):
         return None
-
-
-def git_ok(*args) -> bool:
-    """出力ではなく終了コードだけを見る（cat-file -e は成功時に何も出さない）。"""
-    try:
-        subprocess.run(["git", "-C", str(ROOT), *args], capture_output=True, check=True)
-        return True
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        return False
 
 
 def slug(text: str) -> str:
@@ -75,7 +66,7 @@ def deck_anchor(deck: Path, card_id: str) -> str | None:
 
 
 def origin() -> tuple[str, str] | None:
-    """(owner, repo) — 画像 URL と スライド URL の組み立てに使う。"""
+    """(owner, repo) — スライド URL の組み立てに使う。"""
     url = git("config", "--get", "remote.origin.url")
     if not url:
         return None
@@ -85,11 +76,11 @@ def origin() -> tuple[str, str] | None:
 
 
 def pinned_sha() -> str | None:
-    """HEAD の SHA。origin に載っていなければ警告する（画像が出ないため）。"""
+    """HEAD の SHA。origin に載っていなければ警告する（スライドのリンクが 404 になる）。"""
     sha = git("rev-parse", "HEAD")
     if sha and not git("branch", "-r", "--contains", sha):
         print(f"⚠ {sha[:7]} がまだ origin に無い — 先に push してから実行する"
-              "（画像 URL はこの SHA で固定される）", file=sys.stderr)
+              "（スライドの URL はこの SHA で固定される）", file=sys.stderr)
     return sha
 
 
@@ -99,29 +90,21 @@ def cell(text: str) -> str:
 
 
 def loop_block(ofm, osec, yfm, ysec, repo, sha) -> list[str]:
-    """1ループ = スライド画像 + テキスト版（同じ grid:2x3）。"""
+    """1ループ = grid:2x3 をそのまま写した表（+ スライドへの導線）。"""
     cells = loop_cells(osec, ysec)
     state = "検証済" if yfm else "未検証（夕の /yow で埋まります）"
-    out = [f"## {ofm['title']}", ""]
+    out = [f"## {ofm['title']}", "",
+           f"{ofm['id']} / {ofm['activity']} / {state}", ""]
     tail = []
 
     if repo and sha:
         owner, name = repo
         y, w = week_of(card_date(ofm))
         deck = f"wiki/{deck_name(ofm['owner'], y, w)}.md"
-        svg = f"wiki/img/{ofm['id']}.svg"
         anchor = deck_anchor(ROOT / deck, ofm["id"])
         slide = (f"https://github.com/{owner}/{name}/blob/{sha}/{deck}"
                  + (f"#{anchor}" if anchor else ""))
         tail = [f"[スライドを見る]({slide})", ""]
-        if not git_ok("cat-file", "-e", f"{sha}:{svg}"):
-            print(f"⚠ {svg} が {sha[:7]} に無い — gen_deck.py を回してコミットしてから作り直す"
-                  "（画像は貼らずに続ける）", file=sys.stderr)
-        else:
-            # 画像は素の ![]() で置く。リンクで包むと API 経由の投稿で
-            # バッククォートに括られて文字列になる（module docstring を見よ）。
-            img = f"https://raw.githubusercontent.com/{owner}/{name}/{sha}/{svg}"
-            out += [f"![{ofm['title']}]({img})", ""]
 
     rows = []
     for i in range(0, len(cells), COLS):
@@ -134,8 +117,7 @@ def loop_block(ofm, osec, yfm, ysec, repo, sha) -> list[str]:
         rows.append("| " + " | ".join(cell(b) for _, b in chunk) + " |")
 
     # 表は畳まない（<details> は API 経由の投稿でタグごと落ちる）
-    return out + [f"テキスト版 — {ofm['id']} / {ofm['activity']} / {state}"
-                  "（検索・通知メール用）", ""] + rows + [""] + tail
+    return out + rows + [""] + tail
 
 
 def main() -> int:

@@ -3,7 +3,6 @@
 
 実行:  uv run --with pyyaml --no-project python3 tools/gen_deck.py [--check]
 生成物: wiki/<owner>-<YYYY>-w<WW>.md（週1ファイル。冒頭に週サマリー、続けて1ループ=1枚）
-        wiki/img/<ID>.svg（ループスライドの画像 — PR 本文が貼る。描画は gen_slide_svg.py）
         wiki/order.yaml
 すべて手編集禁止。構成・セル並び・埋め文字の正本は ontology.yaml の deck 節。
 --check は差分があれば非0（週明けは前週 status の stable 化で必ず差分が出る = 週締め PR の種）。
@@ -15,9 +14,6 @@ from collections import Counter
 from pathlib import Path
 
 import yaml
-
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import gen_slide_svg  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 ONT = yaml.safe_load((ROOT / "ontology.yaml").read_text(encoding="utf-8"))
@@ -63,7 +59,7 @@ def chunk(seq, n):
 
 def loop_cells(osec, ysec):
     """ループスライドの6セルを行優先で [(見出し, 本文)] にする。
-    デッキ本文・SVG（gen_slide_svg）・PR 本文（gen_pr_body）はここだけを源にする。"""
+    デッキ本文と PR 本文（gen_pr_body）はここだけを源にする。"""
     decl = ONT["deck"]["loop-slides"]
     cells = []
     for c in decl["cells"]:
@@ -160,9 +156,6 @@ def main() -> int:
         loops.sort(key=lambda t: t[0]["id"])
         name = deck_name(owner, y, w)
         outputs[ROOT / "wiki" / f"{name}.md"] = gen_week(owner, y, w, loops, today)
-        for ofm, osec, yfm, ysec in loops:   # ループスライドの画像（PR 本文が貼る）
-            outputs[ROOT / "wiki" / "img" / f"{ofm['id']}.svg"] = \
-                gen_slide_svg.render(ofm, loop_cells(osec, ysec), yfm is not None)
         mon = dt.date.fromisocalendar(y, w, 1)
         month_groups.setdefault(f"{mon.year}-{mon.month:02d}", []).append(name)
 
@@ -171,9 +164,11 @@ def main() -> int:
         order += [f"  - title: {month}", f"    decks: [{', '.join(month_groups[month])}]"]
     outputs[ROOT / "wiki" / "order.yaml"] = "\n".join(order) + "\n"
 
-    # 生成対象外になった古いデッキ md・スライド画像（カード削除・粒度変更の残骸）。
-    # 掃除は gen_deck が作る種類（wiki/*.md と wiki/img/*.svg）だけに限る —
-    # wiki/ には gen-okf-index.ts など他のツールの生成物も同居するので巻き添えで消さない。
+    # 生成対象外になった古いデッキ md（カード削除・粒度変更の残骸）。
+    # wiki/img/*.svg も掃除の対象に残す — PR 本文が画像をやめて生成しなくなったので、
+    # 過去に生成された分をここで回収する（2026-08-15）。
+    # 掃除は gen_deck が作った種類だけに限る — wiki/ には gen-okf-index.ts など
+    # 他のツールの生成物も同居するので巻き添えで消さない。
     keep = set(outputs) | {ROOT / "wiki" / n for n in ("index.md", "log.md")}
     mine = [*(ROOT / "wiki").glob("*.md"), *(ROOT / "wiki" / "img").glob("*.svg")]
     stale = [p for p in mine if p not in keep]
