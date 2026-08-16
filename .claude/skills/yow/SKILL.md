@@ -39,8 +39,8 @@ description: 夕方、今朝の Y 一覧から「結果どうだったか（O）
    git add wiki/ && git commit -m "wiki: <日付> 夕の再生成" && git push
    ```
 7. **ready 化とレビュー（自動）** — PR 本文を夕の状態（下段が埋まった表）で作り直し、
-   ドラフトを外し、そのままレビューを実行する（**push 済みであること** — スライドの URL は
-   その SHA で固定される）:
+   ドラフトを外し、そのままレビューを実行する（**push 済みであること**
+   — 理由の正本は `tools/gen_pr_body.py` の docstring）:
    ```bash
    uv run --with pyyaml --no-project python3 tools/gen_pr_body.py > /tmp/pr-body.md
    gh pr edit <番号> --body-file /tmp/pr-body.md

@@ -4,14 +4,24 @@ ONY-YOW（O:起きていること / N:望んでいること / Y:やってみる�
 カードで記録し、スライドに合成し、レビューする LLM Wiki。AI はこのファイルの規約に従って振る舞う。
 
 **このファイルには、ここにしか無い規約だけを書く。**
-カードの型・語彙・つながり・引き算診断表・デッキ合成規則の正本は [ontology.yaml](ontology.yaml)。
-Markdown・スライド・リンク・バンドル記法の正本は **slide-wiki**
-（`~/src/claude-skills/slide-wiki`。無ければ `gh repo clone iepyon/claude-skills ~/src/claude-skills`
-→ **続けて `npm install --prefix ~/src/claude-skills/slide-wiki/assets`**。
-クローンだけでは依存が入らず CLI が `effect` 未解決で落ちる）。
+守れているかは `tools/doclint.py` が見る（人間にも AI にも守れなかったため — 20260816-01）。
+
+### 正本の所在
+
+| 何の | 正本 | 他の場所での扱い |
+|---|---|---|
+| カードの型・語彙・つながり・引き算診断表・デッキ合成規則 | [ontology.yaml](ontology.yaml) | 参照だけ。`templates/` は doclint が整合を検査する |
+| ONY-YOW の定義（原典の読解） | [origin/summary.md](origin/summary.md) | **写さない**（ローカル専用/gitignore） |
+| Markdown・スライド・リンク・バンドル記法 | **slide-wiki** | 参照だけ |
+| PR 本文・デッキの見た目と作り方 | `tools/gen_*.py` | CLAUDE.md は**理由**だけ書き、手順はコマンド名で指す |
+| 対話の手順（何をどの順で聞くか） | `.claude/skills/*/SKILL.md` | CLAUDE.md はワークフロー表で入口だけ示す |
+| 記録の運用規約（コミット単位・PR の単位・層の編集権） | **このファイル** | SKILL.md は理由を写さず、手順だけ書く |
+
+slide-wiki の入手は `~/src/claude-skills/slide-wiki`。無ければ
+`gh repo clone iepyon/claude-skills ~/src/claude-skills` →
+**続けて `npm install --prefix ~/src/claude-skills/slide-wiki/assets`**
+（クローンだけでは依存が入らず CLI が `effect` 未解決で落ちる）。
 以下 `$SW` は `~/src/claude-skills/slide-wiki/assets` を指す。
-ONY-YOW の定義の正本は [origin/summary.md](origin/summary.md)。**そちらの内容をここへ写さない。**
-（**origin/ はローカル専用** — 原典スライドの詳細要約を含むため gitignore。リポジトリには載らない）
 
 ## 想定ユースケース（原典 p160）
 
@@ -44,6 +54,7 @@ ONY-YOW の定義の正本は [origin/summary.md](origin/summary.md)。**そち�
 
 ```bash
 uv run --with pyyaml --no-project python3 tools/oylint.py            # カード検査（--pending で未検証一覧）
+uv run --with pyyaml --no-project python3 tools/doclint.py           # 規約の写しのずれを検査
 uv run --with pyyaml --no-project python3 tools/gen_deck.py          # デッキ合成（--check で鮮度検査）
 uv run --with pyyaml --no-project python3 tools/gen_pr_body.py       # PR 本文（A3 ライト）を標準出力へ
 npx --prefix $SW tsx $SW/src/cli.ts --lint wiki/<デッキ>.md --strict  # スライド構造検査
@@ -53,15 +64,18 @@ npx --prefix $SW tsx $SW/src/cli.ts --lint wiki/<デッキ>.md --strict  # ス�
 oylint が見るもの: id=ファイル名 / 必須フィールド・語彙 / 必須節 / **yow→ony の参照存在と同 ID 規則** /
 relates の参照存在 / 引き算診断（info）。error があれば exit 1。
 
+doclint が見るもの: `templates/` が ontology.yaml の宣言からずれていないか（**宣言に無いキーは
+廃止された規約の残骸** — コメントアウトも見る）/ ドキュメントのコマンド行が実在するツールを
+指しているか。規約を2箇所目に書いても機械は気づけないので、**写しやすい2箇所だけを見張る**。
+
 ## デッキ（生成物）
 
 - **週デッキ** `eiji-2026-w33.md`（週単位でファイル化）= 冒頭に週サマリー
   （今週の数字 Table・W カタログ・未検証一覧、各項目から該当スライドへ内部リンク）、
   続けて日々のループスライド（1ループ = `grid:2x3` の1枚・日付順）。
   構成・セル並び・埋め文字「—」・Y 併記の正本は ontology.yaml の `deck` 節
-- ファイル名は**全て小文字**（GitHub の raw 閲覧はケースセンシティブ）
-- `status` は gen_deck が機械的に決める（過去 = `stable`、当日/現在週 = `draft`）
-- 昇格フラグは無い — **全カードが自動掲載**される
+- ファイル名の規則（小文字）・`status` の決め方・**昇格フラグが無いこと**の正本は
+  ontology.yaml の `deck` 節。ここには写さない
 - デッキ本文と PR 本文はどちらも `loop_cells()` を源にする（写しがズレない）
 
 ## ワークフロー
@@ -72,7 +86,7 @@ relates の参照存在 / 引き算診断（info）。error があれば exit 1�
 | 夕: 結果と教訓を話す | `/yow` → 今朝の Y 一覧から O（結果）と W（教訓）を聞き出し、同じ PR に積む → **ready 化 → `/onyw-review` まで自動実行** |
 | 日を確定する | 本人がマージ（**マージ = 日の確定**。ready 化とレビューは /yow が済ませている） |
 | 週を締める | `/close-week` → 前週デッキの stable 化差分を PR に（日次 PR がマージ済み前提） |
-| PR にレビューコメント | `/onyw-review <PR番号>` — **朝夕の /ony /yow が自動実行**する。手動でも可（週締め PR など）。3観点・全体3件・各2行以内 |
+| PR にレビューコメント | `/onyw-review <PR番号>` — **朝夕の /ony /yow が自動実行**する。手動でも可（週締め PR など） |
 | 一覧・バックリンクを見る | `npx --prefix $SW tsx $SW/src/cli.ts --wiki wiki out/index.html` |
 
 **1日 = 1ドラフト PR。** 朝 `/ony` が開き、夕 `/yow` が積み、本人のマージで日が確定する。
@@ -91,11 +105,9 @@ diff を追わなくても**一枚で判る**ようにするのが目的（ト�
 **画像をやめると public/private の制約も消える**（20260814-04 の W の続き）。
 実装は git 履歴にある（`tools/gen_slide_svg.py`）。
 
-- **表の後に「スライドを見る」を素のリンクで置く**。URL は **HEAD のコミット SHA で固定**する
-  （ブランチを消してもマージ後も生き続ける）。したがって順序は
-  **push → 本文生成 → PR 作成/更新** のまま
-- **表を `<details>` で畳まない** — API 経由の投稿ではタグごと落ちる
-  （2026-08-15 に PR #6 で観測）
+**投稿の作法**（`<details>` で畳まない・URL を SHA で固定する・したがって
+`push → 本文生成 → PR 作成/更新` の順）**の正本は `tools/gen_pr_body.py` の docstring**。
+ここには写さない — 写した結果が古くなったのが 20260816-01 の O。
 
 **日次 PR に載せるのは記録だけ**（`raw/` のカードと `wiki/` の再生成）。
 スキーマ変更（CLAUDE.md・ontology.yaml・templates・tools・skills）は **main 直コミット**とし、

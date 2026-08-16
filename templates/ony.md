@@ -5,7 +5,6 @@ title: （スライドの見出しになる一文）
 date: YYYY-MM-DDTHH:MM   # date +%Y-%m-%dT%H:%M で取る（暗算しない）
 owner: eiji
 activity: 計画            # 観察 / 仮説立案 / 実行 / 計画 / 提案（検証は YOW カード）
-# slide: true            # デッキに載せるとき立てる（昇格フラグ）
 # relates: [YYYYMMDD-NN] # 関連する他ループ
 ---
 
